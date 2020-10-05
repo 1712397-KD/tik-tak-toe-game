@@ -23,6 +23,7 @@ class Board extends React.Component {
       clickedSquare[i] = "X";
       this.setState({squares: clickedSquare});
   }
+  
   render() {
     const status = "Next player: X";
 
