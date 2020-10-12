@@ -64,7 +64,7 @@ class Game extends React.Component {
         : "Go to game start";
       return (
         <li key={moveNum}>
-          <button onClick={this.jumpToFunc(moveNum)}>{description}</button>
+          <button className={moveNum === stepNumber ? 'selected-move' : ''} onClick={this.jumpToFunc(moveNum)}>{description}</button>
         </li>
       );
     });
