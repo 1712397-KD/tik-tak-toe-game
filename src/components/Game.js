@@ -8,6 +8,7 @@ class Game extends React.Component {
       history: [
         {
           squares: Array(9).fill(null),
+          lastPositionBySquare: 0
         },
       ],
       xIsNext: true,
@@ -16,7 +17,7 @@ class Game extends React.Component {
   }
 
   handleSquareClick(i) {
-    const  history  = this.state.history.slice(0, this.state.stepNumber + 1);
+    const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const currentSquares = history[history.length - 1];
     const clickedSquare = currentSquares.squares.slice();
     if (calculateWinner(clickedSquare) || clickedSquare[i]) {
@@ -27,18 +28,21 @@ class Game extends React.Component {
       history: history.concat([
         {
           squares: clickedSquare,
+          lastPositionBySquare: i
         },
       ]),
       xIsNext: !this.state.xIsNext,
-      stepNumber: history.length
+      stepNumber: history.length,
     });
   }
 
-  jumpToFunc(stepNum){
-    this.setState({
-      stepNumber: stepNum,
-      xIsNext: (stepNum % 2) === 0
-    })
+  jumpToFunc(stepNum) {
+    return (event) => {
+      this.setState({
+        stepNumber: stepNum,
+        xIsNext: stepNum % 2 === 0,
+      });
+    };
   }
   render() {
     const { history, stepNumber } = this.state;
@@ -52,10 +56,15 @@ class Game extends React.Component {
     }
 
     let moveBtns = history.map((currentBoard, moveNum) => {
-      const description = moveNum ? "Go to moveNum #" + moveNum : "Go to game start";
+      const lastPositionBySquare = currentBoard.lastPositionBySquare;
+      const row = Math.floor(lastPositionBySquare / 3) + 1;
+      const col = lastPositionBySquare % 3 + 1;
+      const description = moveNum
+        ? "Go to move #" + moveNum + " at position (" + row + "," + col + ")"
+        : "Go to game start";
       return (
         <li key={moveNum}>
-          <button onClick={() => this.jumpToFunc(moveNum)}>{description}</button>
+          <button onClick={this.jumpToFunc(moveNum)}>{description}</button>
         </li>
       );
     });
