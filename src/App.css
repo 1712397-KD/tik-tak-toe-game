@@ -52,3 +52,7 @@ ol, ul {
 .selected-move {
   font-weight: bold;
 }
+
+.square.hightlight {
+  color: palevioletred;
+}
