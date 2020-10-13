@@ -8,12 +8,14 @@ class Game extends React.Component {
       history: [
         {
           squares: Array(9).fill(null),
-          lastPositionBySquare: 0
+          lastPositionBySquare: 0,
         },
       ],
       xIsNext: true,
       stepNumber: 0,
+      isAscending: true,
     };
+    this.handleToggleBtn = this.handleToggleBtnFunc.bind(this);
   }
 
   handleSquareClick(i) {
@@ -28,7 +30,7 @@ class Game extends React.Component {
       history: history.concat([
         {
           squares: clickedSquare,
-          lastPositionBySquare: i
+          lastPositionBySquare: i,
         },
       ]),
       xIsNext: !this.state.xIsNext,
@@ -44,8 +46,14 @@ class Game extends React.Component {
       });
     };
   }
+
+  handleToggleBtnFunc() {
+    this.setState({
+      isAscending: !this.state.isAscending,
+    });
+  }
   render() {
-    const { history, stepNumber } = this.state;
+    const { history, stepNumber, isAscending } = this.state;
     const currentSquares = history[stepNumber].squares;
     const winner = calculateWinner(currentSquares);
     let status;
@@ -58,16 +66,27 @@ class Game extends React.Component {
     let moveBtns = history.map((currentBoard, moveNum) => {
       const lastPositionBySquare = currentBoard.lastPositionBySquare;
       const row = Math.floor(lastPositionBySquare / 3) + 1;
-      const col = lastPositionBySquare % 3 + 1;
+      const col = (lastPositionBySquare % 3) + 1;
       const description = moveNum
         ? "Go to move #" + moveNum + " at position (" + row + "," + col + ")"
         : "Go to game start";
+
       return (
         <li key={moveNum}>
-          <button className={moveNum === stepNumber ? 'selected-move' : ''} onClick={this.jumpToFunc(moveNum)}>{description}</button>
+          <button
+            className={moveNum === stepNumber ? "selected-move" : ""}
+            onClick={this.jumpToFunc(moveNum)}
+          >
+            {description}
+          </button>
         </li>
       );
     });
+
+    if (!isAscending) {
+      moveBtns.reverse();
+    }
+
     return (
       <div className="game">
         <div className="game-board">
@@ -78,6 +97,9 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
+          <button onClick={this.handleToggleBtn}>
+            {isAscending ? "Desc" : "Asc"}
+          </button>
           <ol>{moveBtns}</ol>
         </div>
       </div>
