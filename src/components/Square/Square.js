@@ -5,7 +5,7 @@ function Square(props) {
     <button
       onClick={props.onClick}
       className={classNames("square", {
-        "hightlight": props.hightlight 
+        hightlight: props.hightlight,
       })}
     >
       {props.value}
